@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import storage from "./../helpers/storage";
 import ContactForm from "./ContactForm/ContactForm";
 import ContactList from "./ContactList/ContactList";
 import Filter from "./Filter/Filter";
 import { nanoid } from 'nanoid';
+
 
 
 export class App extends React.Component {
@@ -18,22 +20,27 @@ export class App extends React.Component {
   }
 
   componentDidMount() {
-    if (JSON.parse(localStorage.getItem('contacts'))) {
-      this.setState({
-        contacts: JSON.parse(localStorage.getItem('contacts')),
-      });
-    }
+    // if (JSON.parse(localStorage.getItem('contacts'))) {
+    //   this.setState({
+    //     contacts: JSON.parse(localStorage.getItem('contacts')),
+    //   });
+    // }
+
+    const savedContacts = storage.load('contacts') ?? this.state.contacts;
+    this.setState({"contacts": savedContacts});
   }
 
-  componentWillUnmount() {
-    
-  }
 
   componentDidUpdate(prevProps, prevState) { 
-    if (prevState.contacts !== this.state.contacts) {
-      const strinfFildContacts = JSON.stringify(this.state.contacts);
-      localStorage.setItem("contacts", strinfFildContacts);
+    const { contacts } = this.state;
+    if (prevState.contacts!== contacts) {
+      storage.save('contacts', contacts);
     }
+
+    // if (prevState.contacts !== this.state.contacts) {
+    //   const strinfFildContacts = JSON.stringify(this.state.contacts);
+    //   localStorage.setItem("contacts", strinfFildContacts);
+    // }
   }
 
 
